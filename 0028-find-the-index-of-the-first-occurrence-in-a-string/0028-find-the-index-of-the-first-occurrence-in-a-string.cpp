@@ -6,26 +6,36 @@ public:
         string p = needle;
         int n = s.length();
     	int m = p.length();
-    	long long int ans = 0;
+        long long int ans = 0;
+    	long long int hash = 0;
     	long long int pri = 1;
     	for(auto ch : p){
     		ans = (ans + ((ch - 'a' + 1) * pri)%mod)%mod;
     		pri = (pri * 31)%mod;
     	}
-    	int finalans = INT_MAX;
-    	for(int i = 0; i<=n-m; i++)
+    	long long int pri1 = 1;
+    	for(int i = 0; i<m; i++)
     	{
-    		long long int hash = 0;
-    		long long int pri = 1;
-    		for(int j = i; j<m+i; j++)
-    		{
-    			hash = (hash + ((s[j] - 'a' + 1) * pri)%mod)%mod;
-    			pri = (pri * 31)%mod;
-    		}
-    		if(hash == ans){
-    			finalans = min(finalans, i);
-    		}
+    		hash = (hash + ((s[i] - 'a' + 1) * pri1)%mod)%mod;
+    		pri1 = (pri1 * 31)%mod;
     	}
-        return (finalans >= INT_MAX ? -1 : finalans);
+        if(ans == hash){
+            return 0;
+        }
+        else{
+            long long int pri2 = 1;
+            for(int i = m; i<n; i++)
+            {
+                hash = (hash + ((s[i] - 'a' + 1) * pri1)%mod)%mod;
+                hash = (hash - ((s[i-m] - 'a' + 1) * pri2)%mod + mod)%mod;
+                pri2  = (pri2 * 31)%mod;
+                pri1 = (pri1 * 31)%mod;
+                ans = (ans * 31)%mod;
+                if(ans == hash){
+                    return ((i - m) + 1);
+                }
+            }
+            return -1;
+        }
     }
 };
